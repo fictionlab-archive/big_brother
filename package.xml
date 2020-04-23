@@ -2,14 +2,15 @@
 <package format="2">
   <name>leo_big_brother</name>
   <version>0.0.0</version>
-  <description>The leo_big_brother package</description>
+  <description>Big Brother</description>
 
-  <maintainer email="piotr@todo.todo">piotr</maintainer>
+  <author>Piotr Szlachcic</author>
 
-  <license>TODO</license>
+  <maintainer email="support@fictionlab.pl">fictionlab</maintainer>
+
+  <license>MIT</license>
 
 
- 
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>tf</exec_depend>
