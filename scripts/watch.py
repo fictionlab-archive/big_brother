@@ -22,8 +22,10 @@ def callback_marker(data):
 		if abs(position.x)<=width/2.0 and abs(position.y)<=height/2.0: msg="in"
 		elif abs(position.x)>=(width/2.0)+thickness or abs(position.y)>=(height/2.0)+thickness: msg="out"
 		else: msg="controlled"
+		# TODO rover status in mid area
 
 		pub_status.publish(msg)
+		print(msg)
 
 	except: 
 		msg="unknown"
@@ -32,8 +34,8 @@ def callback_marker(data):
 
 
 
-height = rospy.get_param("/height", 0.3)
-width = rospy.get_param("/width", 0.3)
+height = rospy.get_param("/height", 0.5)
+width = rospy.get_param("/width", 0.5)
 thickness = rospy.get_param("/thickness", 0.1)
 rospy.loginfo("Int: %s,Int: %s,Int: %s", height , width, thickness)
 
