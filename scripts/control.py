@@ -1,14 +1,32 @@
 #!/usr/bin/env python
 import math
 import rospy
+import time
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 
+last_tag=0.0
+is_leo=False
+status_leo="unknown"
+
 def callback_cmd(data):
-	print(data)
-    
+    global status_leo
+
+    msg = data
+
+    if status_leo=="unknown" or status_leo=="out":
+        msg.x = 0
+        msg.z = 0
+
+    pub_cmd.publish(msg)
+
+
 def callback_status(data):
-	print(data)
+    global last_tag
+    global status_leo
+
+    last_tag = time.time()
+    status_leo = data.data
 
 
 try:
