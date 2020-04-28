@@ -5,13 +5,23 @@ find_package(catkin REQUIRED COMPONENTS
   ar_track_alvar
   geometry_msgs
   usb_cam
+  message_generation
 )
+
+
+add_message_files(
+  DIRECTORY msg
+  FILES
+  BigBrother.msg
+)
+
+# install(DIRECTORY msg/
+#     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/msg
+# )
+
+generate_messages()
 
 catkin_package(
-
-)
-
-include_directories(
-  ${catkin_INCLUDE_DIRS}
+	CATKIN_DEPENDS message_runtime
 )
 
