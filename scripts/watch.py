@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import math
 import rospy
-from std_msgs.msg import String
+from leo_big_brother.msg import BigBrother
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
@@ -9,7 +9,7 @@ def callback_marker(data):
 	global height
 	global width
 	global thickness
-	msg=String()
+	msg=BigBrother()
 
 	try:
 		position=data.markers[0].pose.pose.position
@@ -19,30 +19,49 @@ def callback_marker(data):
 		orientation = euler_from_quaternion(orientation_list)
 		angle=orientation[2]
 
-		if abs(position.x)<=width/2.0 and abs(position.y)<=height/2.0: msg="in"
-		elif abs(position.x)>=(width/2.0)+thickness or abs(position.y)>=(height/2.0)+thickness: msg="out"
-		else: msg="controlled"
-		# TODO rover status in mid area
+		if abs(position.x)<=width/2.0 and abs(position.y)<=height/2.0: msg.status="inside"
+		elif abs(position.x)>=(width/2.0)+thickness or abs(position.y)>=(height/2.0)+thickness: msg.status="outside"
+		else: 
+			msg.status="controlled"
+			if position.x>=0:
+				msg.location="E"
+				if abs(angle)<=math.pi/2: msg.direction="E"
+				else: msg.direction="W"
+			elif position.x<=0:
+				msg.location="W"
+				if angle>=0: msg.location="W"
+				if abs(angle)<=math.pi/2: msg.direction="E"
+				else: msg.direction="W"
+			elif position.y>=0:
+				msg.location="N"
+				if angle>=0: msg.direction="S"
+				else: msg.direction="N"
+			elif position.y<=0:
+				msg.location="S"
+				if angle>=0: msg.direction="S"
+				else: msg.direction="N"
 
 		pub_status.publish(msg)
-		print(msg)
+		print msg
+
 
 	except: 
-		msg="unknown"
+		msg.status="unknown"
 		pub_status.publish(msg)
+		print "Kicior"
 
 
 
 
 height = rospy.get_param("/height", 0.5)
 width = rospy.get_param("/width", 0.5)
-thickness = rospy.get_param("/thickness", 0.1)
+thickness = rospy.get_param("/thickness", 0.2)
 rospy.loginfo("Int: %s,Int: %s,Int: %s", height , width, thickness)
 
 
 try:
 	rospy.init_node('big_brother_watch')
-	pub_status = rospy.Publisher("big_brother/leo_status", String, queue_size=10)
+	pub_status = rospy.Publisher("big_brother/leo_status", BigBrother, queue_size=10)
 	sub_marker = rospy.Subscriber('ar_pose_marker', AlvarMarkers, callback_marker)
 except rospy.ROSInterruptException as e:
 	rospy.logerr(e)
