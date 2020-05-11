@@ -25,9 +25,9 @@
     <node name="big_brother_watch" pkg="leo_big_brother" type="watch.py" respawn="false" output="screen"/>
 
     <node name="big_brother_control" pkg="leo_big_brother" type="control.py" respawn="false" output="screen"/>
-<!-- 
+
     <include file="$(find leo_big_brother)/launch/leo_model.launch"/>
 
-    <include file="$(find leo_big_brother)/launch/rviz.launch"/> -->
+    <include file="$(find leo_big_brother)/launch/rviz.launch"/>
 
 </launch>
