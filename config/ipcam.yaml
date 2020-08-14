@@ -1,0 +1,3 @@
+video_url: "rtsp://10.42.0.242:554"
+camera_info_url: "package://leo_big_brother/config/camera_ip.yaml"
+frame_id: "cam0_link"
