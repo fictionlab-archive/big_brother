@@ -10,20 +10,15 @@
 
   <license>MIT</license>
 
-
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>tf</exec_depend>
   <exec_depend>ar_track_alvar</exec_depend>
-  <exec_depend>usb_cam</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>leo_description</exec_depend>
+  <exec_depend>ipcamera_driver</exec_depend>
 
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
 
-
-  <export>
-   
-
-  </export>
 </package>
