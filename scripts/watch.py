@@ -20,32 +20,32 @@ def callback_marker(data):
 		elif abs(position.x)>=(width/2.0)+thickness or abs(position.y)>=(height/2.0)+thickness: msg.status="outside"
 		else: 
 			msg.status="controlled"
-			if position.x>=0:
+			if position.x>=width/2:
 				msg.location="E"
 				if abs(angle)<=math.pi/2: msg.direction="E"
 				else: msg.direction="W"
-			elif position.x<=0:
+			elif position.x<=-width/2:
 				msg.location="W"
 				if angle>=0: msg.location="W"
 				if abs(angle)<=math.pi/2: msg.direction="E"
 				else: msg.direction="W"
-			elif position.y>=0:
+			elif position.y>=height/2:
 				msg.location="N"
-				if angle>=0: msg.direction="S"
-				else: msg.direction="N"
-			elif position.y<=0:
+				if angle>=0: msg.direction="N"
+				else: msg.direction="S"
+			elif position.y<=-height/2:
 				msg.location="S"
-				if angle>=0: msg.direction="S"
-				else: msg.direction="N"
+				if angle>=0: msg.direction="N"
+				else: msg.direction="S"
 
 		pub_status.publish(msg)
+		print position
 		print msg
 
 
 	except: 
 		msg.status="unknown"
 		pub_status.publish(msg)
-		print "Kicior"
 
 
 rospy.init_node('big_brother_watch')
