@@ -13,20 +13,32 @@ def callback_cmd(data):
     global status
     msg = data
 
+    dir_mask=15
+
     if status.status=="inside":
         pass
-    # elif status.status=="unknown" or status.status=="outside":
-    elif status.status=="outside":
+    elif status.status=="outside" or status.status=="unknown":
         msg.linear.x = 0
         msg.angular.z = 0
     elif status.status == "controlled":
-        if status.location == status.direction:
-            if msg.linear.x >= 0: msg.linear.x=0
-        else:
-            if msg.linear.x <= 0: msg.linear.x=0 
+
+        if status.pose_mask & BigBrother.POSE_N:
+            dir_mask ^= BigBrother.DIR_1
+            dir_mask ^= BigBrother.DIR_4
+        elif status.pose_mask & BigBrother.POSE_S:
+            dir_mask ^= BigBrother.DIR_3
+            dir_mask ^= BigBrother.DIR_2
+
+        if status.pose_mask & BigBrother.POSE_E:
+            dir_mask ^= BigBrother.DIR_4
+            dir_mask ^= BigBrother.DIR_3
+        elif status.pose_mask & BigBrother.POSE_W:
+            dir_mask ^= BigBrother.DIR_1
+            dir_mask ^= BigBrother.DIR_2
+
+        
         
     pub_cmd.publish(msg)
-    # print msg
 
 
 def callback_status(data):
