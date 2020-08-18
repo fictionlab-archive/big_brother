@@ -6,9 +6,6 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 from tf.transformations import euler_from_quaternion
 
 def callback_marker(data):
-	global height
-	global width
-	global thickness
 	msg=BigBrother()
 
 	try:
@@ -51,16 +48,15 @@ def callback_marker(data):
 		print "Kicior"
 
 
+rospy.init_node('big_brother_watch')
 
+height = rospy.get_param("~safe_zone_height", 0.5)
+width = rospy.get_param("~safe_zone_width", 0.5)
+thickness = rospy.get_param("~controlled_zone_thickness", 0.2)
 
-height = rospy.get_param("/height", 0.5)
-width = rospy.get_param("/width", 0.5)
-thickness = rospy.get_param("/thickness", 0.2)
 rospy.loginfo("Int: %s,Int: %s,Int: %s", height , width, thickness)
 
-
 try:
-	rospy.init_node('big_brother_watch')
 	pub_status = rospy.Publisher("big_brother/leo_status", BigBrother, queue_size=10)
 	sub_marker = rospy.Subscriber('ar_pose_marker', AlvarMarkers, callback_marker)
 except rospy.ROSInterruptException as e:

@@ -1,0 +1,34 @@
+<launch>
+    <arg name="publish_model" default="false"/>
+    <arg name="rviz" default="false"/>
+
+    <arg name="ar_marker_id" default="0"/>
+    <arg name="cam_image_topic" default="cam0/image_raw" />
+    <arg name="cam_info_topic" default="cam0/camera_info" />
+
+    <node name="ipcam" pkg="ipcamera_driver" type="ipcamera_driver">
+        <rosparam command="load" file="$(find leo_big_brother)/config/ipcam.yaml" />
+
+        <remap from="camera/image" to="$(arg cam_image_topic)" />
+    </node>
+
+    <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false">
+        <rosparam command="load" file="$(find leo_big_brother)/config/alvar.yaml" />
+
+        <remap from="camera_image"  to="$(arg cam_image_topic)" />
+        <remap from="camera_info"   to="$(arg cam_info_topic)" />
+    </node>
+
+    <node name="camera_frame_tf" pkg="tf" type="static_transform_publisher"
+          args="0 0 0 0 0 0 /ar_marker_$(arg ar_marker_id) /base_link 10"/> 
+
+    <node name="big_brother_watch" pkg="leo_big_brother" type="watch.py" respawn="false">
+        <rosparam command="load" file="$(find leo_big_brother)/config/big_brother.yaml" />
+    </node>
+
+    <node name="big_brother_control" pkg="leo_big_brother" type="control.py" respawn="false"/>
+
+    <include if="$(arg publish_model)" file="$(find leo_big_brother)/launch/leo_model.launch"/>
+    <include if="$(arg rviz)" file="$(find leo_big_brother)/launch/rviz.launch"/>
+
+</launch>
