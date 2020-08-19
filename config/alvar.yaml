@@ -1,4 +1,4 @@
-marker_size: 10
+marker_size: 16
 max_new_marker_error: 0.05
 max_track_error: 0.05
 max_frequency: 5.0
