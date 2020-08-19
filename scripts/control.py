@@ -12,11 +12,12 @@ status = BigBrother()
 def callback_cmd(data):
     global status
     msg = data
-
     dir_mask=0
+    dir_mask_tmp=15
 
-    if status.status=="inside":
-        pass
+    if time.time()-last_tag>1.0:
+        msg.linear.x = 0
+        msg.angular.z = 0
     elif status.status=="outside" or status.status=="unknown":
         msg.linear.x = 0
         msg.angular.z = 0
@@ -25,24 +26,28 @@ def callback_cmd(data):
         if status.pose_mask & BigBrother.POSE_N:
             dir_mask |= BigBrother.DIR_3
             dir_mask |= BigBrother.DIR_2
-            print "1"
         elif status.pose_mask & BigBrother.POSE_S:
             dir_mask |= BigBrother.DIR_4
             dir_mask |= BigBrother.DIR_1
-            print "2"
+
+        if dir_mask: 
+            dir_mask_tmp=dir_mask
 
         if status.pose_mask & BigBrother.POSE_E:
+            dir_mask=0
             dir_mask |= BigBrother.DIR_4
             dir_mask |= BigBrother.DIR_3
-            print "3"
         elif status.pose_mask & BigBrother.POSE_W:
+            dir_mask=0
             dir_mask |= BigBrother.DIR_1
             dir_mask |= BigBrother.DIR_2
-            print "4"
+
+        dir_mask&=dir_mask_tmp
 
         print dir_mask
-
-        if not status.direction & dir_mask:
+        if not status.direction & dir_mask and msg.linear.x>0:
+            msg.linear.x=0
+        elif not status.direction<<2 & dir_mask and not status.direction>>2 & dir_mask and msg.linear.x<0:
             msg.linear.x=0
             
         
