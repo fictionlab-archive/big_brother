@@ -12,21 +12,46 @@ status = BigBrother()
 def callback_cmd(data):
     global status
     msg = data
+    dir_mask=0
+    dir_mask_tmp=15
 
-    if status.status=="inside":
-        pass
-    # elif status.status=="unknown" or status.status=="outside":
-    elif status.status=="outside":
+    if time.time()-last_tag>timeout:
+        msg.linear.x = 0
+        msg.angular.z = 0
+    elif status.status=="outside" or status.status=="unknown":
         msg.linear.x = 0
         msg.angular.z = 0
     elif status.status == "controlled":
-        if status.location == status.direction:
-            if msg.linear.x >= 0: msg.linear.x=0
-        else:
-            if msg.linear.x <= 0: msg.linear.x=0 
+
+        if status.pose_mask & BigBrother.POSE_N:
+            dir_mask |= BigBrother.DIR_3
+            dir_mask |= BigBrother.DIR_2
+        elif status.pose_mask & BigBrother.POSE_S:
+            dir_mask |= BigBrother.DIR_4
+            dir_mask |= BigBrother.DIR_1
+
+        if dir_mask: 
+            dir_mask_tmp=dir_mask
+
+        if status.pose_mask & BigBrother.POSE_E:
+            dir_mask=0
+            dir_mask |= BigBrother.DIR_4
+            dir_mask |= BigBrother.DIR_3
+        elif status.pose_mask & BigBrother.POSE_W:
+            dir_mask=0
+            dir_mask |= BigBrother.DIR_1
+            dir_mask |= BigBrother.DIR_2
+
+        dir_mask&=dir_mask_tmp
+
+        print dir_mask
+        if not status.direction & dir_mask and msg.linear.x>0:
+            msg.linear.x=0
+        elif not status.direction<<2 & dir_mask and not status.direction>>2 & dir_mask and msg.linear.x<0:
+            msg.linear.x=0
+            
         
     pub_cmd.publish(msg)
-    # print msg
 
 
 def callback_status(data):
@@ -37,11 +62,16 @@ def callback_status(data):
     status = data
 
 
+rospy.init_node('big_brother_control')
+
+timeout = rospy.get_param("~timeout", 1.0)
+
+rospy.loginfo("Int: %s", timeout), 
+
 try:
-    rospy.init_node('big_brother_control')
     sub_status = rospy.Subscriber("big_brother/leo_status", BigBrother, callback_status)
-    sub_cmd = rospy.Subscriber("cmd_vel", Twist, callback_cmd)
-    pub_cmd = rospy.Publisher("big_brother/cmd_vel", Twist, queue_size=10)
+    sub_cmd = rospy.Subscriber("big_brother/cmd_vel", Twist, callback_cmd)
+    pub_cmd = rospy.Publisher("cmd_vel", Twist, queue_size=10)
 
 except rospy.ROSInterruptException as e:
 	rospy.logerr(e)

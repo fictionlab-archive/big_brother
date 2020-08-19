@@ -6,7 +6,7 @@
     <arg name="cam_image_topic" default="cam0/image_raw" />
     <arg name="cam_info_topic" default="cam0/camera_info" />
 
-    <node name="ipcam" pkg="ipcamera_driver" type="ipcamera_driver">
+    <node name="ipcam" pkg="ipcamera_driver" type="ipcamera_driver" respawn="true">
         <rosparam command="load" file="$(find leo_big_brother)/config/ipcam.yaml" />
 
         <remap from="camera/image" to="$(arg cam_image_topic)" />
@@ -26,7 +26,9 @@
         <rosparam command="load" file="$(find leo_big_brother)/config/big_brother.yaml" />
     </node>
 
-    <node name="big_brother_control" pkg="leo_big_brother" type="control.py" respawn="false"/>
+    <node name="big_brother_control" pkg="leo_big_brother" type="control.py" respawn="false">
+        <param name="timeout" value="1.0" />
+    </node>
 
     <include if="$(arg publish_model)" file="$(find leo_big_brother)/launch/leo_model.launch"/>
     <include if="$(arg rviz)" file="$(find leo_big_brother)/launch/rviz.launch"/>
