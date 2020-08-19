@@ -57,6 +57,7 @@ height = rospy.get_param("~safe_zone_height", 0.5)
 width = rospy.get_param("~safe_zone_width", 0.5)
 thickness = rospy.get_param("~controlled_zone_thickness", 0.2)
 
+
 rospy.loginfo("Int: %s,Int: %s,Int: %s", height , width, thickness)
 
 try:

@@ -15,7 +15,7 @@ def callback_cmd(data):
     dir_mask=0
     dir_mask_tmp=15
 
-    if time.time()-last_tag>1.0:
+    if time.time()-last_tag>timeout:
         msg.linear.x = 0
         msg.angular.z = 0
     elif status.status=="outside" or status.status=="unknown":
@@ -62,8 +62,13 @@ def callback_status(data):
     status = data
 
 
+rospy.init_node('big_brother_control')
+
+timeout = rospy.get_param("~timeout", 1.0)
+
+rospy.loginfo("Int: %s", timeout), 
+
 try:
-    rospy.init_node('big_brother_control')
     sub_status = rospy.Subscriber("big_brother/leo_status", BigBrother, callback_status)
     sub_cmd = rospy.Subscriber("cmd_vel", Twist, callback_cmd)
     pub_cmd = rospy.Publisher("big_brother/cmd_vel", Twist, queue_size=10)
