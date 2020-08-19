@@ -2,8 +2,8 @@ string  status
 
 uint8 DIR_1 = 1
 uint8 DIR_2 = 2
-uint8 DIR_4 = 4
-uint8 DIR_8 = 8
+uint8 DIR_3 = 4
+uint8 DIR_4 = 8
 
 uint8 direction
 
