@@ -70,8 +70,8 @@ rospy.loginfo("Int: %s", timeout),
 
 try:
     sub_status = rospy.Subscriber("big_brother/leo_status", BigBrother, callback_status)
-    sub_cmd = rospy.Subscriber("cmd_vel", Twist, callback_cmd)
-    pub_cmd = rospy.Publisher("big_brother/cmd_vel", Twist, queue_size=10)
+    sub_cmd = rospy.Subscriber("big_brother/cmd_vel", Twist, callback_cmd)
+    pub_cmd = rospy.Publisher("cmd_vel", Twist, queue_size=10)
 
 except rospy.ROSInterruptException as e:
 	rospy.logerr(e)
