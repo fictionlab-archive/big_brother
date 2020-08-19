@@ -13,7 +13,7 @@ def callback_cmd(data):
     global status
     msg = data
 
-    dir_mask=15
+    dir_mask=0
 
     if status.status=="inside":
         pass
@@ -23,20 +23,28 @@ def callback_cmd(data):
     elif status.status == "controlled":
 
         if status.pose_mask & BigBrother.POSE_N:
-            dir_mask ^= BigBrother.DIR_1
-            dir_mask ^= BigBrother.DIR_4
+            dir_mask |= BigBrother.DIR_3
+            dir_mask |= BigBrother.DIR_2
+            print "1"
         elif status.pose_mask & BigBrother.POSE_S:
-            dir_mask ^= BigBrother.DIR_3
-            dir_mask ^= BigBrother.DIR_2
+            dir_mask |= BigBrother.DIR_4
+            dir_mask |= BigBrother.DIR_1
+            print "2"
 
         if status.pose_mask & BigBrother.POSE_E:
-            dir_mask ^= BigBrother.DIR_4
-            dir_mask ^= BigBrother.DIR_3
+            dir_mask |= BigBrother.DIR_4
+            dir_mask |= BigBrother.DIR_3
+            print "3"
         elif status.pose_mask & BigBrother.POSE_W:
-            dir_mask ^= BigBrother.DIR_1
-            dir_mask ^= BigBrother.DIR_2
+            dir_mask |= BigBrother.DIR_1
+            dir_mask |= BigBrother.DIR_2
+            print "4"
 
-        
+        print dir_mask
+
+        if not status.direction & dir_mask:
+            msg.linear.x=0
+            
         
     pub_cmd.publish(msg)
 
